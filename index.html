@@ -666,55 +666,7 @@ body::before {
 </div>
 
 <div id="toast"></div>
-<!-- INSTALL POPUP -->
-<div id="installPopup" style="
-  position:fixed;
-  bottom:110px;
-  left:50%;
-  transform:translateX(-50%) translateY(20px);
-  width:90%;
-  max-width:420px;
-  background:linear-gradient(135deg, #1a0000, #1e0800);
-  border:1px solid rgba(255,45,45,0.3);
-  border-radius:18px;
-  padding:16px;
-  z-index:9999;
-  box-shadow:0 10px 40px rgba(0,0,0,0.6);
-  opacity:0;
-  pointer-events:none;
-  transition:all 0.35s ease;
-">
-  <div style="display:flex; align-items:center; gap:12px;">
-    <div style="
-      width:46px;height:46px;border-radius:12px;
-      background:linear-gradient(145deg,#FFD600,#FF2D2D);
-      display:flex;align-items:center;justify-content:center;
-      font-size:24px;
-      box-shadow:0 0 16px rgba(255,214,0,0.6);
-    ">🐔</div>
 
-    <div style="flex:1;">
-      <div style="font-weight:900;font-size:14px;">Install ChickenScan</div>
-      <div style="font-size:11px;color:#aaa;">Get full app experience</div>
-    </div>
-
-    <button id="installClose" style="
-      background:none;border:none;color:#888;font-size:18px;cursor:pointer;
-    ">✕</button>
-  </div>
-
-  <button id="installBtn" style="
-    margin-top:12px;
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:12px;
-    font-weight:900;
-    background:linear-gradient(135deg,#FF2D2D,#FFD600);
-    color:#000;
-    cursor:pointer;
-  ">Install App</button>
-</div>
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js')
@@ -941,63 +893,7 @@ clrBtn.addEventListener('click',()=>{if(!getH().length)return;localStorage.remov
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 loadModel();
-let deferredPrompt = null;
 
-const installPopup = document.getElementById('installPopup');
-const installBtn = document.getElementById('installBtn');
-const installClose = document.getElementById('installClose');
-
-// Show popup animation
-function showInstallPopup() {
-  installPopup.style.opacity = '1';
-  installPopup.style.transform = 'translateX(-50%) translateY(0)';
-  installPopup.style.pointerEvents = 'all';
-}
-
-// Hide popup
-function hideInstallPopup() {
-  installPopup.style.opacity = '0';
-  installPopup.style.transform = 'translateX(-50%) translateY(20px)';
-  installPopup.style.pointerEvents = 'none';
-}
-
-// Listen for install availability
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-
-  // Show after a delay (so it feels natural)
-  setTimeout(() => {
-    showInstallPopup();
-  }, 2500);
-});
-
-// Install button click
-installBtn.addEventListener('click', async () => {
-  if (!deferredPrompt) return;
-
-  deferredPrompt.prompt();
-
-  const choice = await deferredPrompt.userChoice;
-
-  if (choice.outcome === 'accepted') {
-    showToast('🎉 Installed successfully!');
-  } else {
-    showToast('❌ Installation dismissed');
-  }
-
-  deferredPrompt = null;
-  hideInstallPopup();
-});
-
-// Close button
-installClose.addEventListener('click', hideInstallPopup);
-
-// Hide after install
-window.addEventListener('appinstalled', () => {
-  hideInstallPopup();
-  showToast('✅ ChickenScan installed!');
-});
 </script>
 </body>
 </html>
